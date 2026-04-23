@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADAS PRO — Login / Cadastro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+  <style>
+    :root {
+      --primary: #1B2B4D; --primary-dark: #0D1821;
+      --accent: #FF6B35; --accent-hover: #e55824;
+      --tech: #00B4D8; --success: #06A77D; --warning: #F4A261;
+      --white: #FFFFFF; --text: #1A1A2E;
+      --font-h: 'Poppins', sans-serif; --font-b: 'Inter', sans-serif;
+      --transition: all .3s ease; --radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-grid-bg"></div>
+
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="logo-hex">AP</div>
+      <span>ADAS<strong>PRO</strong></span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Entrar</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Cadastrar</button>
+    </div>
+
+    <!-- Alertas -->
+    <div class="alert alert-error" id="alertError"></div>
+    <div class="alert alert-success" id="alertSuccess"></div>
+
+    <!-- Aguardando aprovação -->
+    <div class="pending-card" id="pendingCard">
+      <div class="pending-icon">⏳</div>
+      <h3>Cadastro em análise</h3>
+      <p>Seu cadastro foi recebido e está aguardando aprovação do administrador. Você será notificado quando o acesso for liberado.</p>
+    </div>
+
+    <!-- ─── Form Login ─── -->
+    <form class="auth-form active" id="formLogin" onsubmit="doLogin(event)">
+      <h2 class="auth-form-title">Bem-vindo de volta</h2>
+      <p class="auth-form-sub">Acesse sua conta para ver o material técnico exclusivo.</p>
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉</span>
+          <input type="email" id="loginEmail" placeholder="seu@email.com" required autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Senha</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="loginPassword" placeholder="Sua senha" required autocomplete="current-password" />
+          <span class="toggle-password" onclick="togglePwd('loginPassword', this)">👁</span>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label>
+          <input type="checkbox" id="rememberMe" />
+          Lembrar minha sessão
+        </label>
+        <a href="#" onclick="showAlert('info', 'Entre em contato com o administrador para redefinir sua senha.')">Esqueci a senha</a>
+      </div>
+
+      <button type="submit" class="auth-btn" id="btnLogin">
+        Entrar na plataforma →
+      </button>
+
+      <p class="auth-footer-link">
+        Não tem conta? <a href="#" onclick="switchTab('register')">Cadastre-se aqui</a>
+      </p>
+    </form>
+
+    <!-- ─── Form Cadastro ─── -->
+    <form class="auth-form" id="formRegister" onsubmit="doRegister(event)">
+      <h2 class="auth-form-title">Solicitar acesso</h2>
+      <p class="auth-form-sub">Preencha seus dados. Após revisão, o administrador libera seu acesso.</p>
+
+      <div class="form-group">
+        <label>Nome completo *</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="regName" placeholder="Seu nome completo" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>E-mail *</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉</span>
+          <input type="email" id="regEmail" placeholder="seu@email.com" required autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Senha *</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required autocomplete="new-password" />
+          <span class="toggle-password" onclick="togglePwd('regPassword', this)">👁</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Confirmar senha *</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="regPassword2" placeholder="Repita a senha" required autocomplete="new-password" />
+          <span class="toggle-password" onclick="togglePwd('regPassword2', this)">👁</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Seu perfil profissional</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔧</span>
+          <select id="regLevel">
+            <option value="tecnico">Técnico automotivo</option>
+            <option value="oficina">Proprietário de oficina</option>
+            <option value="autocenter">Auto center / Multimarcas</option>
+            <option value="parabrisa">Loja de parabrisa</option>
+            <option value="gestor">Gestor técnico</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="auth-btn" id="btnRegister">
+        Solicitar cadastro →
+      </button>
+
+      <p class="auth-footer-link">
+        Já tem conta? <a href="#" onclick="switchTab('login')">Faça login</a>
+      </p>
+    </form>
+
+  </div>
+</div>
+
+<!-- ─── Scripts ─── -->
+<script src="js/auth.js"></script>
+<script>
+  /* ─── Troca de abas ─── */
+  function switchTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    document.getElementById('pendingCard').classList.remove('show');
+    clearAlerts();
+
+    if (tab === 'login') {
+      document.getElementById('tabLogin').classList.add('active');
+      document.getElementById('formLogin').classList.add('active');
+    } else {
+      document.getElementById('tabRegister').classList.add('active');
+      document.getElementById('formRegister').classList.add('active');
+    }
+  }
+
+  /* ─── Alertas ─── */
+  function showAlert(type, msg) {
+    clearAlerts();
+    const el = document.getElementById(type === 'error' ? 'alertError' : 'alertSuccess');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 5000);
+  }
+  function clearAlerts() {
+    document.getElementById('alertError').classList.remove('show');
+    document.getElementById('alertSuccess').classList.remove('show');
+  }
+
+  /* ─── Toggle senha ─── */
+  function togglePwd(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+    else { input.type = 'password'; btn.textContent = '👁'; }
+  }
+
+  /* ─── Login ─── */
+  function doLogin(e) {
+    e.preventDefault();
+    clearAlerts();
+    const email    = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const btn      = document.getElementById('btnLogin');
+
+    btn.textContent = 'Verificando...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      const result = AUTH.login(email, password);
+      btn.disabled = false;
+      btn.textContent = 'Entrar na plataforma →';
+
+      if (!result.ok) {
+        if (result.msg === 'pending') {
+          document.getElementById('formLogin').classList.remove('active');
+          document.getElementById('pendingCard').classList.add('show');
+        } else {
+          showAlert('error', result.msg);
+        }
+        return;
+      }
+
+      // Redireciona conforme role
+      const role = result.session.role;
+      if (role === 'admin' || role === 'gestor') {
+        window.location.href = 'admin.html';
+      } else {
+        window.location.href = 'membros.html';
+      }
+    }, 600);
+  }
+
+  /* ─── Registro ─── */
+  function doRegister(e) {
+    e.preventDefault();
+    clearAlerts();
+
+    const name      = document.getElementById('regName').value;
+    const email     = document.getElementById('regEmail').value;
+    const password  = document.getElementById('regPassword').value;
+    const password2 = document.getElementById('regPassword2').value;
+    const level     = document.getElementById('regLevel').value;
+    const btn       = document.getElementById('btnRegister');
+
+    if (password !== password2) {
+      showAlert('error', 'As senhas não coincidem.');
+      return;
+    }
+
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      const result = AUTH.register({ name, email, password, level });
+      btn.disabled = false;
+      btn.textContent = 'Solicitar cadastro →';
+
+      if (!result.ok) {
+        showAlert('error', result.msg);
+        return;
+      }
+
+      // Mostra tela de pendente
+      document.getElementById('formRegister').classList.remove('active');
+      document.getElementById('tabRegister').classList.remove('active');
+      document.getElementById('tabLogin').classList.add('active');
+      document.getElementById('pendingCard').classList.add('show');
+    }, 600);
+  }
+
+  /* ─── Verifica se já está logado ─── */
+  const session = AUTH.getSession();
+  if (session) {
+    window.location.href = (session.role === 'admin' || session.role === 'gestor')
+      ? 'admin.html' : 'membros.html';
+  }
+
+  /* ─── Abre na aba de registro se vier da URL ─── */
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('tab') === 'register') switchTab('register');
+</script>
+
+</body>
+</html>

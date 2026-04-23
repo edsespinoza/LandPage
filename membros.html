@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ADAS PRO — Área de Membros</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+  <style>
+    :root {
+      --primary:#1B2B4D;--primary-dark:#0D1821;--accent:#FF6B35;--accent-hover:#e55824;
+      --tech:#00B4D8;--success:#06A77D;--warning:#F4A261;--white:#FFFFFF;
+      --font-h:'Poppins',sans-serif;--font-b:'Inter',sans-serif;
+      --transition:all .3s ease;--radius:12px;--radius-lg:20px;
+    }
+    body{background:#0f1923;color:rgba(255,255,255,.85);font-family:var(--font-b);margin:0;}
+
+    /* ─── Progress ring ─── */
+    .progress-ring-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .progress-ring circle{transition:stroke-dashoffset .8s ease;transform:rotate(-90deg);transform-origin:50% 50%;}
+    .progress-ring-label{font-family:var(--font-h);font-weight:700;font-size:.9rem;color:#fff;}
+    .progress-ring-sub{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;}
+
+    /* ─── Ticket styles ─── */
+    .tkt-form-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius-lg);padding:28px 32px;}
+    .tkt-form-title{font-family:var(--font-h);font-size:1rem;font-weight:700;color:#fff;margin-bottom:6px;}
+    .tkt-form-sub{font-size:.85rem;color:rgba(255,255,255,.4);margin-bottom:24px;line-height:1.6;}
+    .tkt-label{display:block;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.55);margin-bottom:6px;}
+    .tkt-input{width:100%;padding:11px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:#fff;font-size:.88rem;outline:none;transition:var(--transition);}
+    .tkt-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,107,53,.12);}
+    .tkt-input::placeholder{color:rgba(255,255,255,.25);}
+    .tkt-textarea{resize:vertical;min-height:100px;font-family:var(--font-b);}
+    .tkt-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+    .tkt-group{margin-bottom:12px;}
+    .tkt-submit{width:100%;padding:13px;background:var(--accent);color:#fff;border-radius:9px;font-family:var(--font-h);font-weight:700;font-size:.95rem;cursor:pointer;transition:var(--transition);margin-top:8px;}
+    .tkt-submit:hover{background:var(--accent-hover);transform:translateY(-1px);}
+
+    /* ─── Ticket item ─── */
+    .tkt-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:16px 20px;margin-bottom:10px;cursor:pointer;transition:var(--transition);}
+    .tkt-item:hover{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.06);}
+    .tkt-item-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px;}
+    .tkt-prio{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+    .p-urgent{background:#ff3b3b;} .p-high{background:#ff6b35;} .p-medium{background:#f4a261;} .p-low{background:#06a77d;}
+    .tkt-item-title{font-family:var(--font-h);font-weight:600;color:#fff;font-size:.9rem;flex:1;}
+    .tkt-item-meta{font-size:.76rem;color:rgba(255,255,255,.35);display:flex;gap:12px;flex-wrap:wrap;}
+
+    /* ─── Chat ─── */
+    .member-chat{display:flex;flex-direction:column;gap:10px;padding:20px;max-height:320px;overflow-y:auto;}
+    .chat-msg{max-width:78%;padding:10px 14px;border-radius:12px;font-size:.86rem;line-height:1.6;}
+    .chat-msg.member{background:rgba(255,255,255,.07);border-bottom-left-radius:4px;align-self:flex-start;}
+    .chat-msg.admin{background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.2);border-bottom-right-radius:4px;align-self:flex-end;}
+    .chat-meta{font-size:.7rem;color:rgba(255,255,255,.3);margin-top:3px;}
+    .chat-input-area{display:flex;gap:10px;padding:14px 20px;border-top:1px solid rgba(255,255,255,.06);}
+    .chat-input{flex:1;padding:10px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:.88rem;outline:none;resize:none;transition:var(--transition);}
+    .chat-input:focus{border-color:var(--accent);}
+    .chat-send{padding:10px 18px;background:var(--accent);color:#fff;border-radius:8px;font-weight:600;font-size:.83rem;cursor:pointer;transition:var(--transition);}
+    .chat-send:hover{background:var(--accent-hover);}
+
+    /* ─── Welcome banner ─── */
+    .welcome-banner{background:linear-gradient(135deg,rgba(255,107,53,.1),rgba(0,180,216,.08));border:1px solid rgba(255,107,53,.15);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:16px;}
+    .welcome-icon{font-size:2rem;flex-shrink:0;}
+    .welcome-title{font-family:var(--font-h);font-weight:700;color:#fff;margin-bottom:3px;}
+    .welcome-sub{font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.6;}
+
+    /* ─── Content teaser ─── */
+    .content-item.locked{filter:grayscale(.4);pointer-events:none;}
+    .locked-overlay{position:relative;}
+    .locked-overlay::after{content:'🔒 Conteúdo Bloqueado';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,16,25,.7);border-radius:var(--radius);font-size:.8rem;font-weight:600;color:rgba(255,255,255,.5);backdrop-filter:blur(2px);}
+
+    @media(max-width:640px){.tkt-row{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<div class="dashboard">
+
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-hex">AP</div>
+    <span>ADAS<strong>PRO</strong></span>
+  </div>
+  <div class="sidebar-user">
+    <div class="sidebar-avatar" id="sbAvatar">?</div>
+    <div>
+      <div class="sidebar-user-name" id="sbName">—</div>
+      <div class="sidebar-user-role" id="sbRole">Membro</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-nav-section">Conteúdo</div>
+    <a class="sidebar-nav-item active" onclick="showPage('biblioteca',this)"><span class="nav-icon">📚</span>Biblioteca técnica</a>
+
+    <div class="sidebar-nav-section" style="margin-top:12px">Categorias liberadas</div>
+    <div id="navCats"></div>
+
+    <div class="sidebar-nav-section" style="margin-top:12px">Suporte</div>
+    <a class="sidebar-nav-item" onclick="showPage('suporte',this)"><span class="nav-icon">🎫</span>Abrir ticket
+      <span class="nav-badge" id="myTicketsBadge" style="display:none">0</span>
+    </a>
+    <a class="sidebar-nav-item" onclick="showPage('meus-tickets',this)"><span class="nav-icon">📋</span>Meus tickets</a>
+
+    <div class="sidebar-nav-section" style="margin-top:12px">Conta</div>
+    <a class="sidebar-nav-item" onclick="showPage('perfil',this)"><span class="nav-icon">👤</span>Meu perfil</a>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="sidebar-logout" onclick="AUTH.logout();location.href='login.html'"><span>🚪</span>Sair</button>
+  </div>
+</aside>
+
+<!-- ─── MAIN ─── -->
+<main class="main-content">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="tbTitle">Biblioteca Técnica</div>
+      <div class="topbar-sub" id="tbSub">Acesse os materiais liberados para sua conta</div>
+    </div>
+    <div class="topbar-right">
+      <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 14px">
+        <span style="font-size:.8rem">🔍</span>
+        <input type="text" placeholder="Buscar material..." id="searchInput" oninput="filterSearch()" style="background:none;border:none;outline:none;color:#fff;font-size:.85rem;width:150px"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── BIBLIOTECA ─── -->
+  <div class="page active" id="pageBiblioteca">
+    <div id="welcomeBanner"></div>
+
+    <!-- Stats row -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px" id="statsRow"></div>
+
+    <!-- Filtros de categoria -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px" id="catFilters">
+      <div class="cat-filter active" data-cat="all" onclick="filterCat('all',this)">Todos</div>
+    </div>
+    <div class="content-grid" id="contentGrid"></div>
+  </div>
+
+  <!-- ─── ABRIR TICKET ─── -->
+  <div class="page" id="pageSuport">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:900px">
+
+      <!-- Formulário -->
+      <div class="tkt-form-card">
+        <div class="tkt-form-title">🎫 Abrir ticket de suporte</div>
+        <div class="tkt-form-sub">Envie sua dúvida técnica, solicite material ou peça suporte ao especialista. Respondemos em até 24 horas.</div>
+
+        <div id="ticketAlert" class="alert" style="margin-bottom:12px"></div>
+
+        <form id="ticketForm" onsubmit="submitTicket(event)">
+          <div class="tkt-group">
+            <label class="tkt-label">Assunto do ticket *</label>
+            <input class="tkt-input" id="tktTitle" placeholder="Ex: Calibração AVM 360° Toyota RAV4 2022" required/>
+          </div>
+          <div class="tkt-row">
+            <div>
+              <label class="tkt-label">Categoria</label>
+              <select class="tkt-input" id="tktCat">
+                <option value="duvida-tecnica">🔧 Dúvida técnica</option>
+                <option value="solicitacao-material">📚 Solicitar material</option>
+                <option value="upgrade-plano">⬆️ Upgrade de plano</option>
+                <option value="outro">💬 Outro</option>
+              </select>
+            </div>
+            <div>
+              <label class="tkt-label">Prioridade</label>
+              <select class="tkt-input" id="tktPrio">
+                <option value="low">🟢 Baixa</option>
+                <option value="medium" selected>🟡 Média</option>
+                <option value="high">🟠 Alta</option>
+                <option value="urgent">🔴 Urgente</option>
+              </select>
+            </div>
+          </div>
+          <div class="tkt-group">
+            <label class="tkt-label">Descrição detalhada *</label>
+            <textarea class="tkt-input tkt-textarea" id="tktMessage" placeholder="Descreva o problema ou dúvida com o máximo de detalhes possível: marca, modelo, ano, sistema, erro apresentado..." required></textarea>
+          </div>
+          <button type="submit" class="tkt-submit">Enviar ticket →</button>
+        </form>
+      </div>
+
+      <!-- Dicas -->
+      <div>
+        <div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.15);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px">
+          <div style="font-family:var(--font-h);font-weight:600;color:var(--tech);margin-bottom:12px;font-size:.95rem">💡 Dicas para um bom ticket</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+            ${['Informe marca, modelo e ano do veículo','Descreva o sistema ADAS envolvido (LKAS, AVM, ACC...)','Mencione qualquer código de erro ou sintoma observado','Se possível, envie foto ou vídeo do problema','Selecione a categoria correta para agilizar o atendimento'].map(t=>
+              `<li style="font-size:.84rem;color:rgba(255,255,255,.6);display:flex;gap:8px"><span style="color:var(--tech);flex-shrink:0">→</span>${t}</li>`
+            ).join('')}
+          </ul>
+        </div>
+        <div style="background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.15);border-radius:var(--radius);padding:18px">
+          <div style="font-family:var(--font-h);font-weight:600;color:var(--accent);margin-bottom:8px;font-size:.88rem">⏱ Tempo de resposta</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.5);line-height:1.7">
+            Respondemos tickets em até <strong style="color:#fff">24 horas úteis</strong>.<br>
+            Para urgências no plano Premium, o suporte é prioritário.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MEUS TICKETS ─── -->
+  <div class="page" id="pageMeusTickets">
+    <div style="max-width:900px">
+      <div id="myTicketsList"></div>
+    </div>
+
+    <!-- Visualizador de ticket -->
+    <div id="ticketViewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px">
+      <div style="background:#0f1923;border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-lg);width:100%;max-width:640px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column">
+        <div style="padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+          <div>
+            <div id="tvTitle" style="font-family:var(--font-h);font-weight:700;color:#fff;font-size:.95rem"></div>
+            <div id="tvStatus" style="margin-top:4px;font-size:.78rem;color:rgba(255,255,255,.35)"></div>
+          </div>
+          <button onclick="closeTicketViewer()" style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.5);cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center">✕</button>
+        </div>
+        <div class="member-chat" id="tvChat" style="flex:1;overflow-y:auto"></div>
+        <div class="chat-input-area" id="tvInput">
+          <textarea class="chat-input" id="tvReply" placeholder="Adicionar comentário..." rows="2"></textarea>
+          <button class="chat-send" onclick="sendReply()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── PERFIL ─── -->
+  <div class="page" id="pagePerfil">
+    <div style="max-width:600px">
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius-lg);padding:28px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+          <div id="profAvatar" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--tech));display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-weight:700;font-size:1.3rem;color:#fff">?</div>
+          <div>
+            <div id="profName" style="font-family:var(--font-h);font-size:1.1rem;font-weight:700;color:#fff"></div>
+            <div id="profEmail" style="font-size:.85rem;color:rgba(255,255,255,.4)"></div>
+            <div id="profRole" style="font-size:.72rem;color:var(--tech);text-transform:uppercase;letter-spacing:.06em;margin-top:2px"></div>
+          </div>
+        </div>
+
+        <!-- Progress de acesso -->
+        <div style="margin-bottom:20px">
+          <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.3);margin-bottom:10px">Progresso de acesso</div>
+          <div style="background:rgba(255,255,255,.06);border-radius:50px;height:8px;overflow:hidden;margin-bottom:6px">
+            <div id="accessBar" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--tech));border-radius:50px;transition:width 1s ease;width:0%"></div>
+          </div>
+          <div id="accessText" style="font-size:.78rem;color:rgba(255,255,255,.4)"></div>
+        </div>
+
+        <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.3);margin-bottom:10px">Categorias com acesso</div>
+        <div id="profPerms" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      </div>
+      <div id="memberNote" style="background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.15);border-radius:var(--radius);padding:16px;font-size:.86rem;color:rgba(255,255,255,.55);line-height:1.7"></div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- Botão mobile -->
+<button class="sidebar-toggle-mobile" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#0a1019;border:1px solid rgba(255,255,255,.1);border-radius:50px;padding:10px 24px;font-size:.85rem;color:#fff;transition:transform .3s ease;z-index:9999;opacity:0"></div>
+
+<script src="js/auth.js"></script>
+<script>
+/* ─── Auth ─── */
+const session = AUTH.requireAuth('membro');
+if (!session) throw new Error('Não autenticado');
+
+const initials = session.name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+document.getElementById('sbAvatar').textContent = initials;
+document.getElementById('sbName').textContent   = session.name;
+document.getElementById('sbRole').textContent   = {admin:'Administrador',gestor:'Gestor',membro:'Membro'}[session.role]||session.role;
+
+/* ─── Dados ─── */
+const settings    = AUTH.getSettings();
+const contentData = AUTH.getContentForUser(session.userId);
+const CATS        = AUTH.CATEGORIES;
+const unlockedCats = [...new Set(contentData.filter(c=>!c.locked).map(c=>c.cat))];
+
+let currentCat  = 'all';
+let searchTerm  = '';
+let currentPage = 'biblioteca';
+
+/* ─── Utilitários ─── */
+function showToast(msg,dur=3000) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(80px)';},dur);
+}
+function fmtDate(ts) { return ts ? new Date(ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}) : '—'; }
+function fmtDT(ts)   { return ts ? new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—'; }
+function statusBadge(s) {
+  const m={open:['status-pending','Aberto'],'in-progress':['status-active','Em andamento'],resolved:['status-locked','Resolvido'],closed:['status-locked','Fechado']};
+  const[cls,lbl]=m[s]||['',s]; return `<span class="status-badge ${cls}">${lbl}</span>`;
+}
+
+/* ─── Sidebar nav dinâmico ─── */
+const navEl = document.getElementById('navCats');
+CATS.forEach(cat => {
+  const hasItems  = contentData.some(c=>c.cat===cat.id);
+  const unlocked  = unlockedCats.includes(cat.id);
+  if (!hasItems) return;
+  const a = document.createElement('a');
+  a.className = 'sidebar-nav-item';
+  a.dataset.cat = cat.id;
+  a.onclick = () => { filterCat(cat.id,a); showPage('biblioteca'); };
+  a.innerHTML = `<span class="nav-icon">${cat.icon}</span>${cat.label}${!unlocked?' 🔒':''}`;
+  if (!unlocked) a.style.opacity = '.4';
+  navEl.appendChild(a);
+});
+
+/* ─── Welcome banner ─── */
+const wb = document.getElementById('welcomeBanner');
+if (settings.general.welcomeMessage) {
+  wb.innerHTML = `<div class="welcome-banner">
+    <div class="welcome-icon">👋</div>
+    <div><div class="welcome-title">Olá, ${session.name.split(' ')[0]}!</div>
+    <div class="welcome-sub">${settings.general.welcomeMessage}</div></div>
+  </div>`;
+}
+
+/* ─── Stats do membro ─── */
+const totalCats = CATS.filter(c=>contentData.some(x=>x.cat===c.id)).length;
+const myTickets = AUTH.getUserTickets(session.userId);
+document.getElementById('statsRow').innerHTML = `
+  <div class="stat-card"><div class="stat-card-icon">📚</div><div class="stat-card-value">${contentData.filter(c=>!c.locked).length}</div><div class="stat-card-label">Materiais liberados</div></div>
+  <div class="stat-card"><div class="stat-card-icon">🔒</div><div class="stat-card-value" style="color:rgba(255,255,255,.4)">${contentData.filter(c=>c.locked).length}</div><div class="stat-card-label">Materiais bloqueados</div></div>
+  <div class="stat-card"><div class="stat-card-icon">🗂️</div><div class="stat-card-value">${unlockedCats.length}/${totalCats}</div><div class="stat-card-label">Categorias com acesso</div></div>
+  <div class="stat-card"><div class="stat-card-icon">🎫</div><div class="stat-card-value">${myTickets.length}</div><div class="stat-card-label">Tickets enviados</div></div>`;
+
+/* ─── Badge de tickets ─── */
+const openTkts = myTickets.filter(t=>t.status==='open'||t.status==='in-progress').length;
+const badge = document.getElementById('myTicketsBadge');
+badge.textContent = openTkts;
+badge.style.display = openTkts > 0 ? 'inline-block' : 'none';
+
+/* ─── Filtros de categoria ─── */
+const filtersEl = document.getElementById('catFilters');
+CATS.forEach(cat => {
+  const hasItems = contentData.some(c=>c.cat===cat.id);
+  if (!hasItems) return;
+  const btn = document.createElement('div');
+  btn.className = 'cat-filter';
+  btn.dataset.cat = cat.id;
+  btn.textContent = cat.label;
+  btn.onclick = () => filterCat(cat.id,btn);
+  filtersEl.appendChild(btn);
+});
+
+/* ─── Renderizar conteúdo ─── */
+function renderContent() {
+  const grid = document.getElementById('contentGrid');
+  const items = contentData.filter(item => {
+    const mc = currentCat==='all'||item.cat===currentCat;
+    const ms = !searchTerm||item.title.toLowerCase().includes(searchTerm)||item.desc?.toLowerCase().includes(searchTerm);
+    return mc && ms;
+  });
+
+  if (!items.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:rgba(255,255,255,.3)">Nenhum material encontrado.</div>';
+    return;
+  }
+  grid.innerHTML = items.map(item => {
+    const cat = CATS.find(c=>c.id===item.cat)||{icon:'📄',label:item.cat};
+    return `<div class="content-item ${item.locked?'locked':''}">
+      <div class="content-item-header">
+        <span class="content-item-icon">${item.icon||cat.icon}</span>
+        <div><div class="content-item-cat">${cat.label}</div><div class="content-item-name">${item.title}</div></div>
+      </div>
+      <div class="content-item-body">
+        <div class="content-item-desc">${item.desc||''}</div>
+        ${item.locked
+          ? `<div class="content-item-action content-action-locked" onclick="suggestUpgrade('${cat.label}')">🔒 Bloqueado — solicitar acesso</div>`
+          : `<button class="content-item-action content-action-open" onclick="openContent('${item.id}')">Acessar material →</button>`}
+      </div></div>`;
+  }).join('');
+}
+renderContent();
+
+function filterCat(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-filter,[data-cat]').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll(`[data-cat="${cat}"]`).forEach(b=>b.classList.add('active'));
+  renderContent();
+}
+function filterSearch() {
+  searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  renderContent();
+}
+
+/* ─── Visualizar material ─── */
+function openContent(id) {
+  const item = contentData.find(c=>c.id===id);
+  if (!item||item.locked) return;
+  const modal = document.createElement('div');
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px';
+  modal.innerHTML=`<div style="background:#0f1923;border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-lg);padding:32px;width:100%;max-width:540px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-family:var(--font-h);font-weight:700;color:#fff">${item.title}</div>
+      <button onclick="this.closest('div[style*=fixed]').remove()" style="width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.5);cursor:pointer;font-size:.8rem">✕</button>
+    </div>
+    <div style="color:rgba(255,255,255,.55);font-size:.88rem;line-height:1.7;margin-bottom:24px">${item.desc||''}</div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:24px;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:10px">${item.icon||'📄'}</div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.35);margin-bottom:16px">Arquivo técnico — ${(item.type||'PDF').toUpperCase()}</div>
+      <div style="background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:12px;font-size:.82rem;color:var(--tech)">
+        💡 Para acesso direto ao arquivo, entre em contato com seu mentor via ticket de suporte.
+      </div>
+    </div>
+  </div>`;
+  modal.onclick = e => { if(e.target===modal) modal.remove(); };
+  document.body.appendChild(modal);
+}
+
+function suggestUpgrade(catLabel) {
+  showToast(`Para acessar ${catLabel}, abra um ticket solicitando upgrade de plano.`, 4000);
+  showPage('suporte');
+}
+
+/* ─── Ticket ─── */
+function submitTicket(e) {
+  e.preventDefault();
+  const title   = document.getElementById('tktTitle').value.trim();
+  const cat     = document.getElementById('tktCat').value;
+  const prio    = document.getElementById('tktPrio').value;
+  const message = document.getElementById('tktMessage').value.trim();
+  if (!title||!message) return;
+
+  const result = AUTH.createTicket(session.userId, { title, category:cat, priority:prio, message });
+  if (result.ok) {
+    document.getElementById('ticketForm').reset();
+    showToast('✅ Ticket enviado! Respondemos em até 24h.');
+    // Atualiza badge
+    const open = AUTH.getUserTickets(session.userId).filter(t=>t.status==='open'||t.status==='in-progress').length;
+    badge.textContent = open; badge.style.display = open>0?'inline-block':'none';
+  }
+}
+
+/* ─── Meus Tickets ─── */
+function loadMeusTickets() {
+  const tickets = AUTH.getUserTickets(session.userId);
+  const el = document.getElementById('myTicketsList');
+  el.innerHTML = tickets.length ? tickets.map(t => `
+    <div class="tkt-item" onclick="openTicketViewer('${t.id}')">
+      <div class="tkt-item-header">
+        <div class="tkt-prio p-${t.priority}"></div>
+        <div class="tkt-item-title">${t.title}</div>
+        ${statusBadge(t.status)}
+      </div>
+      <div class="tkt-item-meta">
+        <span>📅 ${fmtDate(t.createdAt)}</span>
+        <span>💬 ${t.messages.length} mensagem(ns)</span>
+        <span>🕐 Atualizado ${fmtDT(t.updatedAt)}</span>
+      </div>
+    </div>`).join('') :
+    `<div style="text-align:center;padding:48px;color:rgba(255,255,255,.3)">
+      <div style="font-size:2.5rem;margin-bottom:12px">🎫</div>
+      <div>Você ainda não tem tickets. <a href="#" onclick="showPage('suporte')" style="color:var(--accent)">Abrir primeiro ticket →</a></div>
+    </div>`;
+}
+
+/* ─── Viewer de ticket ─── */
+let viewingTicketId = null;
+function openTicketViewer(id) {
+  viewingTicketId = id;
+  const t = AUTH.getTicketById(id);
+  if (!t) return;
+  document.getElementById('tvTitle').textContent  = t.title;
+  document.getElementById('tvStatus').innerHTML   = statusBadge(t.status);
+  const chat = document.getElementById('tvChat');
+  chat.innerHTML = t.messages.map(m => `
+    <div class="chat-msg ${m.role==='member'?'member':'admin'}">
+      <div style="font-weight:600;font-size:.75rem;margin-bottom:3px;color:${m.role==='member'?'var(--tech)':'var(--accent)'}">${m.authorName}</div>
+      ${m.message}
+      <div class="chat-meta">${fmtDT(m.createdAt)}</div>
+    </div>`).join('');
+  chat.scrollTop = chat.scrollHeight;
+  document.getElementById('tvInput').style.display = t.status==='closed'?'none':'flex';
+  document.getElementById('tvReply').value = '';
+  const viewer = document.getElementById('ticketViewer');
+  viewer.style.display = 'flex';
+}
+function closeTicketViewer() {
+  document.getElementById('ticketViewer').style.display = 'none';
+  viewingTicketId = null;
+}
+function sendReply() {
+  if (!viewingTicketId) return;
+  const msg = document.getElementById('tvReply').value.trim();
+  if (!msg) return;
+  AUTH.replyTicket(viewingTicketId, session.userId, msg);
+  openTicketViewer(viewingTicketId);
+  loadMeusTickets();
+}
+
+/* ─── Perfil ─── */
+function loadPerfil() {
+  const user = AUTH.getUserById(session.userId);
+  if (!user) return;
+  const init = user.name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById('profAvatar').textContent = init;
+  document.getElementById('profName').textContent   = user.name;
+  document.getElementById('profEmail').textContent  = user.email;
+  document.getElementById('profRole').textContent   = user.role;
+
+  const total = CATS.filter(c=>contentData.some(x=>x.cat===c.id)).length;
+  const pct   = total > 0 ? Math.round((user.permissions.length/total)*100) : 0;
+  document.getElementById('accessBar').style.width = pct + '%';
+  document.getElementById('accessText').textContent = `${user.permissions.length} de ${total} categorias liberadas (${pct}%)`;
+
+  const permsEl = document.getElementById('profPerms');
+  permsEl.innerHTML = CATS.filter(c=>user.permissions.includes(c.id)).map(c =>
+    `<span style="background:rgba(0,180,216,.1);color:var(--tech);border:1px solid rgba(0,180,216,.2);border-radius:50px;padding:4px 12px;font-size:.75rem;font-weight:500">${c.icon} ${c.label}</span>`
+  ).join('') || '<span style="font-size:.82rem;color:rgba(255,255,255,.3)">Nenhuma categoria liberada ainda.</span>';
+
+  document.getElementById('memberNote').innerHTML = settings.general.membershipNote || 'Para solicitar acesso a novas categorias ou alterar seu plano, abra um ticket de suporte.';
+}
+
+/* ─── Navegação ─── */
+function showPage(page, navEl) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav-item').forEach(n=>n.classList.remove('active'));
+  const map = {
+    biblioteca:    ['pageBiblioteca','Biblioteca Técnica','Acesse os materiais liberados para sua conta'],
+    suporte:       ['pageSuport','Abrir Ticket de Suporte','Envie sua dúvida ao especialista'],
+    'meus-tickets':['pageMeusTickets','Meus Tickets','Histórico de suporte e atendimento'],
+    perfil:        ['pagePerfil','Meu Perfil','Informações da sua conta e permissões'],
+  };
+  const [id,title,sub] = map[page]||['pageBiblioteca','Biblioteca',''];
+  document.getElementById(id)?.classList.add('active');
+  document.getElementById('tbTitle').textContent = title;
+  document.getElementById('tbSub').textContent   = sub;
+  navEl?.classList.add('active');
+  if (page==='meus-tickets') loadMeusTickets();
+  if (page==='perfil') { setTimeout(()=>{ document.getElementById('accessBar').style.width = (AUTH.getUserById(session.userId)?.permissions.length/(CATS.length||1)*100)+'%'; },100); loadPerfil(); }
+}
+</script>
+</body>
+</html>
