@@ -1,0 +1,243 @@
+/* ================================================
+   ADAS PRO — Interações da Landing Page
+   ================================================ */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* ─── Navbar scroll ─── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar?.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  /* ─── Menu mobile ─── */
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.getElementById('navLinks');
+  hamburger?.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navLinks?.classList.toggle('open');
+  });
+  navLinks?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      hamburger?.classList.remove('active');
+      navLinks.classList.remove('open');
+    });
+  });
+
+  /* ─── FAQ accordion ─── */
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('active');
+      // Fecha todos
+      document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+      // Abre o atual se estava fechado
+      if (!isOpen) item.classList.add('active');
+    });
+  });
+
+  /* ─── Counter animation ─── */
+  function animateCounter(el) {
+    if (el.dataset.animated) return;
+    el.dataset.animated = '1';
+    const target = parseInt(el.dataset.target, 10);
+    const suffix = el.dataset.suffix || '';
+    const duration = 1800;
+    const step = 16;
+    const increment = target / (duration / step);
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current = Math.min(current + increment, target);
+      el.textContent = Math.floor(current) + suffix;
+      if (current >= target) clearInterval(timer);
+    }, step);
+  }
+
+  /* ─── Scroll reveal + counters ─── */
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Dispara contador se tiver data-target
+          entry.target.querySelectorAll('[data-target]').forEach(animateCounter);
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // Counter isolado para stats do hero
+  const counterObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('[data-target]').forEach(animateCounter);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+  document.querySelectorAll('.hero-stats, .about-systems-count').forEach(el => counterObserver.observe(el));
+
+  /* ─── Formulário de contato → captura de lead + WhatsApp ─── */
+  const contactForm = document.getElementById('contactForm');
+  contactForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = contactForm.querySelector('.form-submit');
+    btn.textContent = 'Abrindo WhatsApp...';
+    btn.disabled = true;
+
+    const name    = document.getElementById('cName')?.value.trim() || '';
+    const phone   = document.getElementById('cPhone')?.value.trim() || '';
+    const email   = document.getElementById('cEmail')?.value.trim() || '';
+    const level   = document.getElementById('cLevel')?.value || '';
+    const message = document.getElementById('cMessage')?.value.trim() || '';
+    const hp      = document.getElementById('cWebsite')?.value.trim() || '';
+
+    // Persiste o lead no backend (best-effort — nunca bloqueia o WhatsApp)
+    captureLead({ name, email, phone, profile: level, message, company_website: hp });
+
+    const levelMap = {
+      tecnico: 'Técnico automotivo', oficina: 'Proprietário de oficina',
+      autocenter: 'Auto center / Multimarcas', parabrisa: 'Loja de parabrisa',
+      gestor: 'Gestor / Coordenador técnico', outro: 'Outro'
+    };
+
+    let text = `Olá! Vim pelo site *ADAS PRO* e quero saber mais sobre a mentoria.\n\n`;
+    text += `*Nome:* ${name}\n`;
+    text += `*WhatsApp:* ${phone}\n`;
+    text += `*E-mail:* ${email}\n`;
+    if (level) text += `*Perfil:* ${levelMap[level] || level}\n`;
+    if (message) text += `*Necessidade:* ${message}\n`;
+
+    const waUrl = `https://wa.me/5511947591115?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, '_blank', 'noopener');
+
+    contactForm.reset();
+    btn.textContent = '🎯 Solicitar avaliação gratuita';
+    btn.disabled = false;
+    showFormSuccess();
+  });
+
+  /* ─── Captura de lead (Edge Function capture-lead) ─── */
+  function captureLead(data) {
+    try {
+      if (typeof SUPABASE_CONFIG === 'undefined' || !SUPABASE_CONFIG.url) return;
+      const url = `${SUPABASE_CONFIG.url}/functions/v1/capture-lead`;
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_CONFIG.anonKey,
+          'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+        },
+        body: JSON.stringify({ ...data, ...collectTracking() }),
+        keepalive: true,
+      }).catch(() => { /* best-effort */ });
+    } catch (_) { /* never break the form */ }
+  }
+
+  /* ─── Origem/visitante: UTM + referrer + página + dispositivo ─── */
+  function collectTracking() {
+    const p = new URLSearchParams(window.location.search);
+    const ua = navigator.userAgent || '';
+    const isTablet = /iPad|Tablet/i.test(ua);
+    const isMobile = /Mobi|Android|iPhone/i.test(ua) && !isTablet;
+    return {
+      utm_source:   p.get('utm_source')   || '',
+      utm_medium:   p.get('utm_medium')   || '',
+      utm_campaign: p.get('utm_campaign') || '',
+      utm_term:     p.get('utm_term')     || '',
+      utm_content:  p.get('utm_content')  || '',
+      referrer:     document.referrer || '',
+      landing_page: window.location.pathname || '/',
+      device:       isTablet ? 'tablet' : (isMobile ? 'mobile' : 'desktop'),
+    };
+  }
+
+  function showFormSuccess() {
+    let msg = document.getElementById('formSuccess');
+    if (!msg) {
+      msg = document.createElement('div');
+      msg.id = 'formSuccess';
+      msg.className = 'alert alert-success show';
+      msg.style.cssText = 'margin-top:12px;display:flex';
+      msg.innerHTML = '✅ WhatsApp aberto! Aguardamos sua mensagem.';
+      contactForm.after(msg);
+    }
+    msg.style.display = 'flex';
+    setTimeout(() => { msg.style.display = 'none'; }, 6000);
+  }
+
+  /* ─── Smooth scroll para âncoras ─── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  /* ─── Marquee brands: duplica itens para loop infinito ─── */
+  const track = document.querySelector('.brands-track');
+  if (track) {
+    track.innerHTML += track.innerHTML;
+  }
+
+  /* ─── Tooltip para sistema cards ─── */
+  // (expansível futuramente)
+
+  /* ─── Hero live bar — social proof dinâmico ─── */
+  (function () {
+    const activeEl = document.getElementById('hlbActiveCount');
+    const ticketEl = document.getElementById('hlbTicketCount');
+    if (!activeEl || !ticketEl) return;
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    let active  = rand(18, 27);
+    let tickets = rand(5, 11);
+    activeEl.textContent  = active;
+    ticketEl.textContent  = tickets;
+
+    function bump(el, current, min, max) {
+      const next = Math.max(min, Math.min(max, current + (Math.random() > 0.3 ? 1 : -1)));
+      el.classList.add('updating');
+      setTimeout(() => { el.textContent = next; el.classList.remove('updating'); }, 250);
+      return next;
+    }
+
+    function scheduleActive() {
+      setTimeout(() => { active  = bump(activeEl,  active,  14, 31); scheduleActive();  }, rand(40000, 75000));
+    }
+    function scheduleTickets() {
+      setTimeout(() => { tickets = bump(ticketEl, tickets,   3, 14); scheduleTickets(); }, rand(55000, 95000));
+    }
+    scheduleActive();
+    scheduleTickets();
+  })();
+
+  /* ─── Redirect para área de membros se já logado ─── */
+  if (typeof AUTH !== 'undefined') {
+    AUTH.init().then(() => {
+      const session = AUTH.getSession();
+      const memberBtn = document.querySelector('.btn-members');
+      if (session && memberBtn) {
+        memberBtn.textContent = 'Minha Área';
+        memberBtn.href = session.role === 'admin' || session.role === 'gestor'
+          ? 'admin.html'
+          : 'membros.html';
+      }
+    });
+  }
+});

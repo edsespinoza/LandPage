@@ -1,0 +1,319 @@
+/* ================================================================
+   ADAS PRO — LandPage (edsespinoza/LandPage)
+   Complemento carregado após css/style.css contendo os estilos das
+   seções exclusivas desta versão da landing page (hero em duas
+   colunas, Vehicle Sensor Display e ADAS Live) que não existem no
+   style.css base.
+   ================================================================ */
+
+/* ─── Alert do formulário de contato (em auth.css nas páginas internas) ─── */
+.alert {
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: .85rem;
+  margin-bottom: 16px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+.alert.show { display: flex; }
+.alert-success { background: rgba(6,167,125,.15); border: 1px solid rgba(6,167,125,.3); color: #4dd9a8; }
+.alert-error   { background: rgba(220,53,69,.15); border: 1px solid rgba(220,53,69,.3); color: #ff6b7a; }
+
+/* ─── Navbar — item "Área de Membros" ───
+   .btn-nav usa !important, então aqui também é preciso !important
+   (mesma importância → vence quem tem maior especificidade). */
+.nav-links a.btn-members {
+  background: transparent !important;
+  color: var(--white) !important;
+  border: 1px solid rgba(255,255,255,.35);
+  transition: var(--transition);
+}
+.nav-links a.btn-members:hover {
+  background: rgba(255,255,255,.12) !important;
+  border-color: var(--tech);
+  box-shadow: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO — duas colunas (conteúdo + Vehicle Sensor Display)
+   O style.css base define .hero .container como coluna centralizada
+   (versão de página única); aqui é reaberto para a linha.
+   ═══════════════════════════════════════════════════════════════ */
+.hero .container {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  max-width: 1180px;
+  gap: 44px;
+}
+.hero-content {
+  align-items: flex-start;
+  flex: 1 1 56%;
+  min-width: 0;
+}
+.hero-actions { justify-content: flex-start; }
+.hero-visual {
+  flex: 0 0 420px;
+  width: 100%;
+  max-width: 420px;
+  min-width: 0;
+}
+
+/* ─── Vehicle Sensor Display ─── */
+.vehicle-sensor-display {
+  position: relative;
+  background: linear-gradient(160deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 22px;
+  padding: 22px 20px 18px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 30px 70px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.vsd-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: .63rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+  margin-bottom: 14px;
+}
+.vsd-line {
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,180,216,.55), transparent);
+}
+
+.vsd-container { position: relative; }
+.vsd-container > svg {
+  width: 100% !important;   /* o HTML traz height:100% inline */
+  height: auto !important;
+  display: block;
+}
+
+.vsd-chip {
+  position: absolute;
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 5px 10px;
+  border-radius: 50px;
+  white-space: nowrap;
+  background: rgba(13,24,33,.9);
+  border: 1px solid rgba(0,180,216,.35);
+  color: rgba(255,255,255,.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.35);
+  line-height: 1.2;
+}
+.vsd-chip.vsd-top    { top: 1%;    left: 50%; transform: translateX(-50%); }
+.vsd-chip.vsd-bottom { bottom: 1%; left: 50%; transform: translateX(-50%); }
+.vsd-chip.vsd-left   { left: 0;    top: 40%;  transform: translateY(-50%); }
+.vsd-chip.vsd-right  { right: 0;   top: 62%;  transform: translateY(-50%); }
+
+.vsd-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.vsd-s {
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.6);
+}
+.vsd-s.ok   { color: #4dd9a8; }
+.vsd-s.warn { color: var(--warning); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SEÇÃO ADAS LIVE
+   ═══════════════════════════════════════════════════════════════ */
+.adas-live-section {
+  background:
+    radial-gradient(900px 480px at 88% 18%, rgba(0,180,216,.10), transparent 62%),
+    linear-gradient(180deg, #0D1821 0%, #0a141d 100%);
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.adas-live-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.08fr;
+  gap: 56px;
+  align-items: center;
+}
+.adas-live-content { min-width: 0; }
+.adas-live-desc {
+  color: rgba(255,255,255,.62);
+  font-size: .97rem;
+  line-height: 1.8;
+  margin: 18px 0 26px;
+  max-width: 520px;
+}
+.adas-live-features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.adas-live-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 14px;
+  padding: 14px 16px;
+  transition: var(--transition);
+}
+.adas-live-features li:hover {
+  border-color: rgba(0,180,216,.35);
+  transform: translateY(-2px);
+}
+.alf-icon {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  font-size: 1.05rem;
+  line-height: 1;
+  background: rgba(0,180,216,.12);
+  border: 1px solid rgba(0,180,216,.28);
+  border-radius: 10px;
+}
+.adas-live-features li > div { min-width: 0; }
+.adas-live-features li > div > strong {
+  display: block;
+  color: #fff;
+  font-size: .88rem;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.adas-live-features li > div > span {
+  display: block;
+  color: rgba(255,255,255,.5);
+  font-size: .78rem;
+  line-height: 1.6;
+}
+
+/* ─── Painéis animados ─── */
+.adas-live-panels { min-width: 0; }
+.adas-viz-wrap { display: flex; flex-direction: column; gap: 14px; }
+.adas-viz-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.adas-panel {
+  background: linear-gradient(160deg, rgba(255,255,255,.055), rgba(255,255,255,.015));
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+  padding: 16px;
+  min-width: 0;
+}
+.adas-panel-label {
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.42);
+  margin-bottom: 12px;
+}
+.radar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.radar-wrap .adas-panel-label { align-self: stretch; text-align: left; }
+.radar-wrap canvas { max-width: 100%; height: auto; }
+
+.live-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .66rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.55);
+}
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: adasLivePulse 2s infinite;
+}
+@keyframes adasLivePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+.adas-metrics { display: flex; flex-direction: column; gap: 8px; }
+.adas-metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 9px;
+  padding: 7px 11px;
+}
+.adas-metric-label {
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+}
+.adas-metric-val {
+  font-family: var(--font-h);
+  font-size: .74rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+.adas-metric-val.ok   { color: #4dd9a8; }
+.adas-metric-val.warn { color: var(--warning); }
+
+/* ─── Destaque do contador "Crescimento ADAS/ano" ─── */
+.dramatic-section {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  text-shadow: 0 0 26px rgba(255,107,53,.45);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVO
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 1040px) {
+  .hero .container {
+    flex-direction: column;
+    text-align: center;
+    gap: 44px;
+    max-width: 860px;
+  }
+  .hero-content { align-items: center; flex: 1 1 auto; }
+  .hero-actions { justify-content: center; }
+  .hero-visual  { flex: 0 0 auto; width: 100%; max-width: 430px; margin: 0 auto; }
+  .adas-live-grid { grid-template-columns: 1fr; gap: 40px; }
+  .adas-live-desc { max-width: none; }
+}
+@media (max-width: 560px) {
+  .adas-viz-row { grid-template-columns: 1fr; }
+  .vsd-chip { font-size: .54rem; padding: 4px 8px; }
+  .vsd-status-row { justify-content: center; gap: 12px; }
+  .vehicle-sensor-display { padding: 18px 14px 15px; }
+}
